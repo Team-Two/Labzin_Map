@@ -1,6 +1,8 @@
 package com.example.labzinandroid;
 
 
+import java.io.IOException;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -14,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.maps.*;
 
+
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,6 +26,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 
 
@@ -67,7 +71,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity
          // Connect the client.
         mLocationClient.connect();
         
-        Location mCurrentLocation = mLocationClient.getLastLocation();
+        
         
         //mMap.addMarker(new MarkerOptions().position(
         //		new LatLng(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude())).
@@ -77,86 +81,49 @@ public class MainActivity extends android.support.v4.app.FragmentActivity
 	        // Disconnecting the client invalidates it.
 	        mLocationClient.disconnect();
 	        super.onStop();
-	    }
+	      }
 	
 	public void onMapClick(LatLng point) {
 		mMap.addMarker(new MarkerOptions().position(point).
 				icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
-		}
+		
+		try{
+        	Location mCurrentLocation = mLocationClient.getLastLocation();
+        	mMap.addMarker(new MarkerOptions().position(
+        	        		new LatLng(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude())).
+        					icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
+           } 
+             catch (Exception e) 
+	    	 {
+	    	 	Log.d("Location Updates", "Caught Exception: " + e.getMessage());
+	    	 	Toast.makeText(this, "GetLastLocation failed"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+	    	 } 
+		 }
 
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
-		// TODO Auto-generated method stub
+		Log.d("Location Updates",
+    	        "Connection failed.");
+		Toast.makeText(this, "Connection failed", Toast.LENGTH_SHORT).show();
 		
 	}
 
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
-		// TODO Auto-generated method stub
+		Log.d("Location Updates",
+    	        "Connected.");
+		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 		
 	}
 
 
 	@Override
 	public void onDisconnected() {
-		// TODO Auto-generated method stub
+		Log.d("Location Updates",
+    	        "Disconnected.");
 		
 	}
-	
 		
-		/*com.google.android.maps.MapView MView = (com.google.android.maps.MapView) findViewById(R.id.mapview);
-		MView.setBuiltInZoomControls(true);
-		MapConrol = MView.getController();
-		
-		LocationManager LocManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-		
-		LocationListener LocListener = new LocationListener() {
-			
-			@Override
-			public void onStatusChanged(String provider, int status, Bundle extras) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onProviderEnabled(String provider) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onProviderDisabled(String provider) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onLocationChanged(Location location) {
-				MapConrol.setCenter(new GeoPoint((int)location.getLatitude(),(int)location.getLongitude()));
-				
-			}
-		};
-		LocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, LocListener);
-		
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	//@Override
-	//
-
-	@Override
-	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	*/
-
 }
